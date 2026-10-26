@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#123b35">
+  <title>AI Banking Assistant</title>
+  <style>
+    :root {
+      color-scheme: light;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: #172b27;
+      background: #f3f7f5;
+      font-synthesis: none;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      background:
+        radial-gradient(ellipse at 12% 0%, rgba(179, 221, 205, .45), transparent 38rem),
+        #f3f7f5;
+    }
+
+    .topbar {
+      height: 76px;
+      display: flex;
+      align-items: center;
+      border-bottom: 1px solid #e5ece8;
+      background: rgba(255, 255, 255, .88);
+    }
+
+    .topbar-inner, main {
+      width: min(100% - 40px, 860px);
+      margin: 0 auto;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      color: #153f37;
+      font-size: 16px;
+      font-weight: 720;
+      letter-spacing: -.02em;
+    }
+
+    .brand-mark {
+      width: 38px;
+      height: 38px;
+      display: grid;
+      place-items: center;
+      border-radius: 12px;
+      background: #e4f2eb;
+      font-size: 20px;
+    }
+
+    main { padding: 70px 0 64px; }
+
+    .intro { margin-bottom: 30px; }
+
+    .eyebrow {
+      margin: 0 0 12px;
+      color: #347968;
+      font-size: 12px;
+      font-weight: 750;
+      letter-spacing: .13em;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      margin: 0;
+      color: #15332d;
+      font-size: clamp(32px, 5vw, 46px);
+      letter-spacing: -.045em;
+      line-height: 1.12;
+    }
+
+    .intro p:last-child {
+      max-width: 590px;
+      margin: 15px 0 0;
+      color: #60716b;
+      font-size: 16px;
+      line-height: 1.7;
+    }
+
+    .card {
+      padding: clamp(22px, 5vw, 34px);
+      border: 1px solid #e2eae6;
+      border-radius: 20px;
+      background: #fff;
+      box-shadow: 0 18px 50px rgba(24, 55, 45, .07);
+    }
+
+    label {
+      display: block;
+      margin-bottom: 11px;
+      color: #263f38;
+      font-size: 14px;
+      font-weight: 680;
+    }
+
+    textarea {
+      width: 100%;
+      min-height: 116px;
+      resize: vertical;
+      padding: 16px 17px;
+      border: 1px solid #d7e2dc;
+      border-radius: 12px;
+      outline: none;
+      color: #203c34;
+      background: #fcfdfc;
+      font: inherit;
+      font-size: 15px;
+      line-height: 1.6;
+      transition: border-color .18s, box-shadow .18s;
+    }
+
+    textarea::placeholder { color: #9aa9a2; }
+
+    textarea:focus {
+      border-color: #438b75;
+      box-shadow: 0 0 0 3px rgba(67, 139, 117, .13);
+    }
+
+    .form-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      margin-top: 17px;
+    }
+
+    .privacy-note {
+      margin: 0;
+      color: #7b8983;
+      font-size: 12px;
+      line-height: 1.5;
+    }
+
+    button {
+      min-width: 126px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 9px;
+      padding: 13px 17px;
+      border: 0;
+      border-radius: 10px;
+      color: #fff;
+      background: #17634f;
+      font: inherit;
+      font-size: 14px;
+      font-weight: 680;
+      cursor: pointer;
+      transition: background .18s, transform .18s;
+    }
+
+    button:hover:not(:disabled) { background: #104d3d; transform: translateY(-1px); }
+    button:disabled { cursor: wait; opacity: .72; }
+
+    .spinner {
+      width: 15px;
+      height: 15px;
+      border: 2px solid rgba(255, 255, 255, .45);
+      border-top-color: #fff;
+      border-radius: 50%;
+      animation: spin .7s linear infinite;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .response {
+      margin-top: 23px;
+      padding: 24px;
+      border: 1px solid #dce9e2;
+      border-radius: 16px;
+      background: #f9fcfa;
+    }
+
+    .response[hidden] { display: none; }
+
+    .response-heading {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      margin: 0 0 12px;
+      color: #1a5b49;
+      font-size: 14px;
+      font-weight: 750;
+    }
+
+    .answer {
+      margin: 0;
+      color: #31463f;
+      font-size: 15px;
+      line-height: 1.75;
+      white-space: pre-wrap;
+      overflow-wrap: anywhere;
+    }
+
+    .sources {
+      margin: 21px 0 0;
+      padding: 17px 0 0;
+      border-top: 1px solid #e3ece7;
+    }
+
+    .sources h3 {
+      margin: 0 0 10px;
+      color: #596b64;
+      font-size: 12px;
+      font-weight: 750;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+    }
+
+    .sources ul { margin: 0; padding-left: 19px; color: #48635a; }
+    .sources li { margin: 6px 0; font-size: 13px; }
+    .sources:empty { display: none; }
+
+    .error { border-color: #f0d4cc; background: #fff9f7; }
+    .error .response-heading { color: #9a382a; }
+
+    .disclaimer {
+      margin: 20px 2px 0;
+      color: #89958f;
+      font-size: 12px;
+      line-height: 1.6;
+    }
+
+    @media (max-width: 560px) {
+      .topbar { height: 66px; }
+      main { padding-top: 46px; }
+      .form-footer { align-items: stretch; flex-direction: column; }
+      button { width: 100%; }
+      .response { padding: 19px; }
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="topbar-inner">
+      <div class="brand"><span class="brand-mark" aria-hidden="true">⌂</span> Banking Support</div>
+    </div>
+  </header>
+  <main>
+    <section class="intro" aria-labelledby="page-title">
+      <p class="eyebrow">Your everyday banking guide</p>
+      <h1 id="page-title">AI Banking Assistant</h1>
+      <p>Ask a question about our banking services. Answers are grounded in the bank documents available to this assistant.</p>
+    </section>
+
+    <section class="card" aria-label="Ask a banking question">
+      <form id="question-form">
+        <label for="question">How can we help you today?</label>
+        <textarea id="question" name="question" maxlength="2000" required
+          placeholder="For example: What documents are required for a home loan?"></textarea>
+        <div class="form-footer">
+          <p class="privacy-note">For your privacy, do not include account numbers, card numbers, passwords, or other sensitive details.</p>
+          <button id="ask-button" type="submit"><span id="button-label">Ask AI</span></button>
+        </div>
+      </form>
+
+      <section id="response" class="response" aria-live="polite" hidden>
+        <h2 id="response-heading" class="response-heading">AI Response</h2>
+        <p id="answer" class="answer"></p>
+        <div class="sources">
+          <h3>Sources</h3>
+          <ul id="source-list"></ul>
+        </div>
+      </section>
+      <p class="disclaimer">This assistant provides general information from demonstration documents. It does not make lending decisions or replace advice from a bank representative.</p>
+    </section>
+  </main>
+
+  <script>
+    const form = document.getElementById("question-form");
+    const questionInput = document.getElementById("question");
+    const askButton = document.getElementById("ask-button");
+    const buttonLabel = document.getElementById("button-label");
+    const responseSection = document.getElementById("response");
+    const responseHeading = document.getElementById("response-heading");
+    const answerElement = document.getElementById("answer");
+    const sourceList = document.getElementById("source-list");
+
+    function showError(message) {
+      responseSection.hidden = false;
+      responseSection.classList.add("error");
+      responseHeading.textContent = "Something went wrong";
+      answerElement.textContent = message;
+      sourceList.replaceChildren();
+    }
+
+    form.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      const question = questionInput.value.trim();
+      if (!question) {
+        questionInput.focus();
+        return;
+      }
+
+      askButton.disabled = true;
+      buttonLabel.textContent = "Thinking...";
+      const spinner = document.createElement("span");
+      spinner.className = "spinner";
+      spinner.setAttribute("aria-hidden", "true");
+      askButton.append(spinner);
+      responseSection.hidden = true;
+      responseSection.classList.remove("error");
+
+      try {
+        const response = await fetch("/ask", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ question }),
+        });
+        const result = await response.json();
+        if (!response.ok) {
+          throw new Error(result.error || "The request could not be completed.");
+        }
+
+        responseHeading.textContent = "AI Response";
+        answerElement.textContent = result.answer;
+        sourceList.replaceChildren();
+        for (const source of result.sources || []) {
+          const item = document.createElement("li");
+          item.textContent = source.page
+            ? `${source.filename} — Page ${source.page}`
+            : source.filename;
+          sourceList.append(item);
+        }
+        responseSection.hidden = false;
+      } catch (error) {
+        showError(error.message || "Unable to reach the assistant. Please try again.");
+      } finally {
+        spinner.remove();
+        buttonLabel.textContent = "Ask AI";
+        askButton.disabled = false;
+      }
+    });
+  </script>
+</body>
+</html>
